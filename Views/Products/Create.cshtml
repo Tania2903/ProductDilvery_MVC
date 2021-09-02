@@ -1,0 +1,99 @@
+﻿@model ProductDilvery_MVC.Models.Product
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+
+
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-8">
+        <form asp-action="Create" name="cart">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price_per_Item" class="control-label"></label>
+                <input type="text" name="price" asp-for="Price_per_Item" class="form-control" />
+                <span asp-validation-for="Price_per_Item" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Qty" class="control-label"></label>
+                <input type="text" name="qty" asp-for="Qty" class="form-control" />
+                <span asp-validation-for="Qty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Total_Price" class="control-label"></label>
+                <input type="text" name="total" jAutoCalc="{qty} * {price}" asp-for="Total_Price" class="form-control" />
+                <span asp-validation-for="Total_Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-2">
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+$(function() {
+
+			function autoCalcSetup() {
+				$('form#cart').jAutoCalc('destroy');
+				$('form#cart tr.line_items').jAutoCalc({keyEventsFire: true, decimalPlaces: 2, emptyAsZero: true});
+				$('form#cart').jAutoCalc({decimalPlaces: 2});
+			}
+			autoCalcSetup();
+
+
+			$('button.row-remove').on("click", function(e) {
+				e.preventDefault();
+
+				var form = $(this).parents('form')
+				$(this).parents('tr').remove();
+				autoCalcSetup();
+
+			});
+
+			$('button.row-add').on("click", function(e) {
+				e.preventDefault();
+
+				var $table = $(this).parents('table');
+				var $top = $table.find('tr.line_items').first();
+				var $new = $top.clone(true);
+
+				$new.jAutoCalc('destroy');
+				$new.insertBefore($top);
+				$new.find('input[type=text]').val('');
+				autoCalcSetup();
+
+			});
+
+		});
+		
+	</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
